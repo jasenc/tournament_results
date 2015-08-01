@@ -32,7 +32,14 @@ def deletePlayers():
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    # count(DISTINCT id) as player_count FROM players
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT COUNT(id) FROM players;")
+    # Used fetchone() because there should only be one result.
+    count = c.fetchone()
+    conn.close()
+    # fetchone() returns a tuple, here we need the first/only element.
+    return int(count[0])
 
 
 def registerPlayer(name):
@@ -46,7 +53,7 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO players (name) VALUES (%s)", (name,))
+    c.execute("INSERT INTO players (name) VALUES (%s);", (name,))
     conn.commit()
     conn.close()
 
