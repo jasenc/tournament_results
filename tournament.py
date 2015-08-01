@@ -3,6 +3,7 @@
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
+# Import pyscopg2 to utilize PostgreSQL with Python
 import psycopg2
 
 
@@ -13,14 +14,22 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
+    # delete all rows from table matches
+    conn = connect()
+    c = conn.cursor()
+    c.execute("DELETE FROM matches;")
+    conn.commit()
+    conn.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
+    # delete all rows from table players
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
+    # count(DISTINCT id) as player_count FROM players
 
 
 def registerPlayer(name):
@@ -32,6 +41,7 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
+    # insert new player in players table, avoid SQL injection
 
 
 def playerStandings():
@@ -47,6 +57,7 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    # count wins from matches return players.name order by wins DESC
 
 
 def reportMatch(winner, loser):
