@@ -53,6 +53,7 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
+    # Avoid SQL injection by utilizing the second argument of execute().
     c.execute("INSERT INTO players (name) VALUES (%s);", (name,))
     conn.commit()
     conn.close()
@@ -72,6 +73,12 @@ def playerStandings():
         matches: the number of matches the player has played
     """
     # count wins from matches return players.name order by wins DESC
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM player_standings;")
+    standings = c.fetchall()
+    conn.close()
+    return standings
 
 
 def reportMatch(winner, loser):
@@ -81,6 +88,12 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    conn = connect()
+    c = conn.cursor()
+    # Avoid SQL injection by utilizing the second argument of execute().
+    c.execute("INSERT INTO matches (winner, loser) VALUES ((SELECT id FROM players WHERE players.id=(%s)), (SELECT id FROM players WHERE players.id=(%s)));", (winner, loser))
+    conn.commit()
+    conn.close()
 
 
 def swissPairings():
