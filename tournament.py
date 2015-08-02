@@ -91,7 +91,10 @@ def reportMatch(winner, loser):
     conn = connect()
     c = conn.cursor()
     # Avoid SQL injection by utilizing the second argument of execute().
-    c.execute("INSERT INTO matches (winner, loser) VALUES ((SELECT id FROM players WHERE players.id=(%s)), (SELECT id FROM players WHERE players.id=(%s)));", (winner, loser))
+    c.execute("INSERT INTO matches (winner, loser) VALUES\
+              ((SELECT id FROM players WHERE players.id=(%s)),\
+              (SELECT id FROM players WHERE players.id=(%s)));",
+              (winner, loser))
     conn.commit()
     conn.close()
 
