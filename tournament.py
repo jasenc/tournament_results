@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 #
-# tournament.py -- implementation of a Swiss-system tournament
+# tournament.py -- This program was written in order to maintain a Swiss
+# pairings style tournament utilizing a database.
 #
+# Jasen Carroll
+# July 31st, 2015
 
 # Import pyscopg2 to utilize PostgreSQL with Python
 import psycopg2
@@ -10,10 +13,14 @@ import psycopg2
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     try:
+        # Connect to the database
         db = psycopg2.connect("dbname=tournament")
+        # Create a cursor for the database
         c = db.cursor()
+        # Returm the cursor and database
         return db, c
     except:
+        # If the above does not work:
         print ("Could not connect to the database.")
 
 
@@ -120,6 +127,7 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    # Python method of sorting swissPairings
     # count = countPlayers()
     # standings = playerStandings()
     # pairings = []
@@ -130,6 +138,8 @@ def swissPairings():
     #     pairings.append(match)
     #     i += 2
     # return pairings
+
+    # SQL method of sorting swissPairings
     db, c = connect()
     query = "SELECT * FROM player_matches;"
     c.execute(query)
