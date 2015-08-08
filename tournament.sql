@@ -35,3 +35,31 @@ CREATE VIEW player_standings AS
          ON players.id = matches2.winner OR players.id = matches2.loser
       GROUP BY players.id
       ORDER BY wins DESC;
+
+CREATE VIEW standings AS
+     SELECT row_number() over(ORDER BY wins DESC NULLS last) AS row_num,
+            id,
+            name
+       FROM player_standings;
+
+CREATE VIEW standings_odd AS
+     SELECT row_number() over(ORDER BY row_num DESC NULLS last) AS row_num_odd,
+            id,
+            name
+       FROM standings
+      WHERE mod(row_num, 2) = 1;
+
+CREATE VIEW standings_even AS
+     SELECT row_number() over(ORDER BY row_num DESC NULLS last) AS row_num_even,
+            id,
+            name
+       FROM standings
+      WHERE mod(row_num, 2) = 0;
+
+CREATE VIEW player_matches AS
+     SELECT standings_odd.id AS id_player1,
+            standings_odd.name AS name_player1,
+            standings_even.id AS id_player2,
+            standings_even.name AS name_player2
+       FROM standings_odd, standings_even
+      WHERE standings_odd.row_num_odd = standings_even.row_num_even;

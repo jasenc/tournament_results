@@ -9,35 +9,40 @@ import psycopg2
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+    try:
+        db = psycopg2.connect("dbname=tournament")
+        c = db.cursor()
+        return db, c
+    except:
+        print ("Could not connect to the database.")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    conn = connect()
-    c = conn.cursor()
-    c.execute("DELETE FROM matches;")
-    conn.commit()
-    conn.close()
+    db, c = connect()
+    query = "TRUNCATE matches;"
+    c.execute(query)
+    db.commit()
+    db.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    conn = connect()
-    c = conn.cursor()
-    c.execute("DELETE FROM players;")
-    conn.commit()
-    conn.close()
+    db, c = connect()
+    query = "TRUNCATE players, matches;"
+    c.execute(query)
+    db.commit()
+    db.close()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    conn = connect()
-    c = conn.cursor()
-    c.execute("SELECT COUNT(id) FROM players;")
+    db, c = connect()
+    query = "SELECT COUNT(id) FROM players;"
+    c.execute(query)
     # Used fetchone() because there should only be one result.
     count = c.fetchone()
-    conn.close()
+    db.close()
     # fetchone() returns a tuple, here we need the first/only element.
     return int(count[0])
 
@@ -51,12 +56,13 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    conn = connect()
-    c = conn.cursor()
+    db, c = connect()
     # Avoid SQL injection by utilizing the second argument of execute().
-    c.execute("INSERT INTO players (name) VALUES (%s);", (name,))
-    conn.commit()
-    conn.close()
+    query = "INSERT INTO players (name) VALUES (%s);"
+    parameter = (name,)
+    c.execute(query, parameter)
+    db.commit()
+    db.close()
 
 
 def playerStandings():
@@ -73,11 +79,11 @@ def playerStandings():
         matches: the number of matches the player has played
     """
     # count wins from matches return players.name order by wins DESC
-    conn = connect()
-    c = conn.cursor()
-    c.execute("SELECT * FROM player_standings;")
+    db, c = connect()
+    query = "SELECT * FROM player_standings;"
+    c.execute(query)
     standings = c.fetchall()
-    conn.close()
+    db.close()
     return standings
 
 
@@ -88,15 +94,15 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-    conn = connect()
-    c = conn.cursor()
+    db, c = connect()
     # Avoid SQL injection by utilizing the second argument of execute().
-    c.execute("INSERT INTO matches (winner, loser) VALUES\
-              ((SELECT id FROM players WHERE players.id=(%s)),\
-              (SELECT id FROM players WHERE players.id=(%s)));",
-              (winner, loser))
-    conn.commit()
-    conn.close()
+    query = "INSERT INTO matches (winner, loser) VALUES\
+            ((SELECT id FROM players WHERE players.id=(%s)),\
+            (SELECT id FROM players WHERE players.id=(%s)));"
+    parameter = (winner, loser)
+    c.execute(query, parameter)
+    db.commit()
+    db.close()
 
 
 def swissPairings():
