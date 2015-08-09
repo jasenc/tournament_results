@@ -42,27 +42,24 @@ CREATE VIEW player_standings AS
       GROUP BY players.id
       ORDER BY wins DESC;
 
--- Create a view from player_standings with numbered rows.
-CREATE VIEW standings AS
-     SELECT row_number() over(ORDER BY wins DESC NULLS last) AS row_num,
-            id,
-            name
-       FROM player_standings;
-
--- From standings create a view of only odd rows.
+-- From player_standings create a view of only odd rows.
 CREATE VIEW standings_odd AS
-     SELECT row_number() over(ORDER BY row_num DESC NULLS last) AS row_num_odd,
-            id,
-            name
-       FROM standings
+     SELECT *
+       FROM (SELECT row_number() over(ORDER BY wins DESC NULLS last)
+                    AS row_num,
+                    id,
+                    name
+               FROM player_standings) as odd_rows
       WHERE mod(row_num, 2) = 1;
 
--- From standings create a view of only even rows.
+-- From player_standings create a view of only even rows.
 CREATE VIEW standings_even AS
-     SELECT row_number() over(ORDER BY row_num DESC NULLS last) AS row_num_even,
-            id,
-            name
-       FROM standings
+     SELECT *
+       FROM (SELECT row_number() over(ORDER BY wins DESC NULLS last)
+                    AS row_num,
+                    id,
+                    name
+               FROM player_standings) as even_rows
       WHERE mod(row_num, 2) = 0;
 
 -- Match odd rows with even rows to produce next player match.
@@ -72,4 +69,8 @@ CREATE VIEW player_matches AS
             standings_even.id AS id_player2,
             standings_even.name AS name_player2
        FROM standings_odd, standings_even
-      WHERE standings_odd.row_num_odd = standings_even.row_num_even;
+      WHERE (standings_odd.row_num + 1) = standings_even.row_num;
+
+-- How can the above three views be refactored in to one view? I was unsure
+-- how to create a JOIN after a WHERE condition, and nesting subqueries three
+-- deep was starting to get a little crazy. 
