@@ -36,7 +36,7 @@ def deleteMatches():
 def deletePlayers():
     """Remove all the player records from the database."""
     db, c = connect()
-    query = "TRUNCATE players, matches;"
+    query = "TRUNCATE players, matches, byes;"
     c.execute(query)
     db.commit()
     db.close()
@@ -46,6 +46,18 @@ def countPlayers():
     """Returns the number of players currently registered."""
     db, c = connect()
     query = "SELECT COUNT(id) FROM players;"
+    c.execute(query)
+    # Used fetchone() because there should only be one result.
+    count = c.fetchone()
+    db.close()
+    # fetchone() returns a tuple, here we need the first/only element.
+    return int(count[0])
+
+
+def countActivePlayers():
+    """Returns the number of active players for the next match."""
+    db, c = connect()
+    query = "SELECT COUNT(id) FROM active_players;"
     c.execute(query)
     # Used fetchone() because there should only be one result.
     count = c.fetchone()
@@ -127,17 +139,6 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-    # Python method of sorting swissPairings
-    # count = countPlayers()
-    # standings = playerStandings()
-    # pairings = []
-    # i = 0
-    # while i < count:
-    #     match = [standings[i][0], standings[i][1],
-    #              standings[i+1][0], standings[i+1][1]]
-    #     pairings.append(match)
-    #     i += 2
-    # return pairings
 
     # SQL method of sorting swissPairings
     db, c = connect()
