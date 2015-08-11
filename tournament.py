@@ -36,7 +36,7 @@ def deleteMatches():
 def deletePlayers():
     """Remove all the player records from the database."""
     db, c = connect()
-    query = "TRUNCATE players, matches, byes;"
+    query = "TRUNCATE players, matches;"
     c.execute(query)
     db.commit()
     db.close()

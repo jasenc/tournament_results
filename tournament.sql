@@ -73,4 +73,4 @@ CREATE VIEW player_matches AS
 
 -- How can the above three views be refactored in to one view? I was unsure
 -- how to create a JOIN after a WHERE condition, and nesting subqueries three
--- deep was starting to get a little crazy. 
+-- deep was starting to get a little crazy.
