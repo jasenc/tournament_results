@@ -26,7 +26,10 @@ CREATE TABLE matches (id SERIAL primary key,
                       player_a INTEGER REFERENCES players (id),
                       player_b INTEGER REFERENCES players (id),
                       winner INTEGER REFERENCES players (id),
-                      loser INTEGER REFERENCES players (id));
+                      loser INTEGER REFERENCES players (id),
+                      -- Add CHECK to ensure player_a id is always less than
+                      -- player_b id, this will help ensure no rematches.
+                      CHECK(player_a < player_b));
 
 -- Create a view for player standings by wins.
 CREATE VIEW player_standings AS
