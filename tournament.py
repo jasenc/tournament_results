@@ -113,26 +113,50 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-    if winner < loser:
-        player_a = winner
-        player_b = loser
-    elif loser < winner:
-        player_a = loser
-        player_b = winner
-    else:
-        print "What just happened? No logical order of winner/loser ids"
+    # if winner < loser:
+    #     player_a = winner
+    #     player_b = loser
+    # elif loser < winner:
+    #     player_a = loser
+    #     player_b = winner
+    # else:
+    #     print "What just happened? No logical order of winner/loser ids"
+    #
+    # db, c = connect()
+    # # Avoid SQL injection by utilizing the second argument of execute().
+    # query = "INSERT INTO matches (player_a, player_b, winner, loser) VALUES\
+    #         ((SELECT id FROM players WHERE players.id=(%s)),\
+    #         (SELECT id FROM players WHERE players.id=(%s)),\
+    #         (SELECT id FROM players WHERE players.id=(%s)),\
+    #         (SELECT id FROM players WHERE players.id=(%s)));"
+    # parameter = (player_a, player_b, winner, loser)
+    # c.execute(query, parameter)
+    # db.commit()
+    # db.close()
 
-    db, c = connect()
-    # Avoid SQL injection by utilizing the second argument of execute().
-    query = "INSERT INTO matches (player_a, player_b, winner, loser) VALUES\
-            ((SELECT id FROM players WHERE players.id=(%s)),\
-            (SELECT id FROM players WHERE players.id=(%s)),\
-            (SELECT id FROM players WHERE players.id=(%s)),\
-            (SELECT id FROM players WHERE players.id=(%s)));"
-    parameter = (player_a, player_b, winner, loser)
-    c.execute(query, parameter)
-    db.commit()
-    db.close()
+    try:
+        db, c = connect()
+        # Avoid SQL injection by utilizing the second argument of execute().
+        query = "INSERT INTO matches (player_a, player_b, winner, loser) VALUES\
+                ((SELECT id FROM players WHERE players.id=(%s)),\
+                (SELECT id FROM players WHERE players.id=(%s)),\
+                (SELECT id FROM players WHERE players.id=(%s)),\
+                (SELECT id FROM players WHERE players.id=(%s)));"
+        parameter = (winner, loser, winner, loser)
+        c.execute(query, parameter)
+        db.commit()
+        db.close()
+    except psycopg2.Error:
+        db, c = connect()
+        query = "INSERT INTO matches (player_a, player_b, winner, loser) VALUES\
+                ((SELECT id FROM players WHERE players.id=(%s)),\
+                (SELECT id FROM players WHERE players.id=(%s)),\
+                (SELECT id FROM players WHERE players.id=(%s)),\
+                (SELECT id FROM players WHERE players.id=(%s)));"
+        parameter = (loser, winner, winner, loser)
+        c.execute(query, parameter)
+        db.commit()
+        db.close()
 
 
 def swissPairings():
