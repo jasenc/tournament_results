@@ -23,6 +23,8 @@ CREATE TABLE players (id SERIAL primary key,
 
 -- Create a table for matches.
 CREATE TABLE matches (id SERIAL primary key,
+                      player_a INTEGER REFERENCES players (id),
+                      player_b INTEGER REFERENCES players (id),
                       winner INTEGER REFERENCES players (id),
                       loser INTEGER REFERENCES players (id));
 
