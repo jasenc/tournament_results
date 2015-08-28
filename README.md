@@ -22,17 +22,15 @@ Cloning from this repository will ensure that you always have the most up to dat
 ## Authors
 
 Jasen Carroll  
-jasen.c8@gmail.com  
+jasen.c@icloud.com  
 July 31st, 2015
 
 ## Issues & Feature Requests
 
-Please use GitHub to notify me of any issues or feature requests. 
+Please use GitHub to notify me of any issues or feature requests.
 
 * Navigate to the repository on [GitHub](https://github.com/jasenc/tournament_results).
 * Click the `Issues` link on the menu towards the right.
 * Then click `New issue`.
 
 Pull Requests are encouraged! Please do no hesitate.
-
-
