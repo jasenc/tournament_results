@@ -31,6 +31,8 @@ CREATE TABLE matches (id SERIAL primary key,
                       -- player_b id, this will help ensure no rematches.
                       CHECK(player_a < player_b));
 
+CREATE UNIQUE INDEX no_rematches ON matches (player_a, player_b);
+
 -- Create a view for player standings by wins.
 CREATE VIEW player_standings AS
      SELECT players.id,
