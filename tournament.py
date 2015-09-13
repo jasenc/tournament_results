@@ -184,11 +184,20 @@ def swissPairings():
     previous_matches = c.fetchall()
     db.close()
 
-    # # Check to prevent rematches
-    # if i in range(len(player_matches)):
-    #     for j in range(len(previous_matches)):
-    #         if (player_matches[i][0] == previous_matches[j][0] and
-    #            player_matches[i][2] == previous_matches[j][1]):
-    #             return something
-
+    # Check to prevent rematches
+    for i in range(len(player_matches)):  # for new_match in player_matches
+        for j in range(len(previous_matches)):  # for old_match in previous_matches
+            if (player_matches[i][0] == previous_matches[j][0] and
+               player_matches[i][2] == previous_matches[j][1]):  # if new_match == old_match
+                # need to convert player_matches to list
+                this_player = player_matches[i][0]  # record this player
+                try:
+                    other_player = player_matches[i+1][0]  # get the next player
+                    player_matches[i][0] = other_player  # put the next in the current position
+                    player_matches[i+1][0] = this_player  # move the current player to the next position
+                except:  # if there is an out of index error
+                    other_player = player_matches[i-1][0]  # get the previous player
+                    player_matches[i][0] = other_player  # put the previous in the current position
+                    player_matches[i-1][0] = this_player  # move the current player to the previous position
+                # convert back to a tuple
     return player_matches
