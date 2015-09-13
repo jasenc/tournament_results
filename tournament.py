@@ -180,5 +180,15 @@ def swissPairings():
     query = "SELECT * FROM player_matches;"
     c.execute(query)
     player_matches = c.fetchall()
+    query = "SELECT * FROM previous_matches;"
+    previous_matches = c.fetchall()
     db.close()
+
+    # # Check to prevent rematches
+    # if i in range(len(player_matches)):
+    #     for j in range(len(previous_matches)):
+    #         if (player_matches[i][0] == previous_matches[j][0] and
+    #            player_matches[i][2] == previous_matches[j][1]):
+    #             return something
+
     return player_matches

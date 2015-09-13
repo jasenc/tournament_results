@@ -78,6 +78,8 @@ CREATE VIEW player_matches AS
        FROM standings_odd, standings_even
       WHERE (standings_odd.row_num + 1) = standings_even.row_num;
 
--- How can the above three views be refactored in to one view? I was unsure
--- how to create a JOIN after a WHERE condition, and nesting subqueries three
--- deep was starting to get a little crazy.
+-- Create a view for previous matches to help prevent rematches
+CREATE VIEW previous_matches AS
+     SELECT player_a,
+            player_b
+       FROM matches
