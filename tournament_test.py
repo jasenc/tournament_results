@@ -146,7 +146,11 @@ def testRematches():
     reportMatch(id2, id4)
     pairings = swissPairings()
     print pairings
-    if 
+    if pairings[0][0] == id1 and pairings[0][2] == id2:
+        raise ValueError("There is a rematch between the first two players")
+    elif pairings[1][0] == id3 and pairings[1][2] == id4:
+        raise ValueError("There is a rematch between the last two players")
+    print "9. Rematches successfully prevented."
 
 
 if __name__ == '__main__':
