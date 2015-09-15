@@ -110,8 +110,6 @@ def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
 
     Args:
-      player_a: the id number of the first player
-      player_b: the id number of the second player
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
@@ -163,6 +161,7 @@ def swissPairings():
     c.execute(query)
     player_matches = c.fetchall()
     query = "SELECT * FROM previous_matches;"
+    c.execute(query)
     previous_matches = c.fetchall()
     db.close()
 
