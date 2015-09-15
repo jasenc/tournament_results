@@ -185,19 +185,29 @@ def swissPairings():
     db.close()
 
     # Check to prevent rematches
-    for i in range(len(player_matches)):  # for new_match in player_matches
-        for j in range(len(previous_matches)):  # for old_match in previous_matches
+    # For every match returned from the database,
+    for i in range(len(player_matches)):
+        # and every match that has already occured,
+        for j in range(len(previous_matches)):
+            # check if that new match is the same as a previous match.
             if (player_matches[i][0] == previous_matches[j][0] and
-               player_matches[i][2] == previous_matches[j][1]):  # if new_match == old_match
-                # need to convert player_matches to list
+               player_matches[i][2] == previous_matches[j][1]):
+
+                # If it is, convert out new tuple to a list.
+                player_matches = list(player_matches)
+                # Record the player in the first position.
                 this_player = player_matches[i][0]  # record this player
+
+                # Try swapping them with the first player from the next match.
                 try:
-                    other_player = player_matches[i+1][0]  # get the next player
-                    player_matches[i][0] = other_player  # put the next in the current position
-                    player_matches[i+1][0] = this_player  # move the current player to the next position
-                except:  # if there is an out of index error
-                    other_player = player_matches[i-1][0]  # get the previous player
-                    player_matches[i][0] = other_player  # put the previous in the current position
-                    player_matches[i-1][0] = this_player  # move the current player to the previous position
-                # convert back to a tuple
+                    other_player = player_matches[i+1][0]
+                    player_matches[i][0] = other_player
+                    player_matches[i+1][0] = this_player
+                # If there is an IndexError, swap with the first player from
+                # the previous match.
+                except IndexError:  # if there is an out of index error
+                    other_player = player_matches[i-1][0]
+                    player_matches[i][0] = other_player
+                    player_matches[i-1][0] = this_player
+                player_matches = tuple(player_matches)
     return player_matches
