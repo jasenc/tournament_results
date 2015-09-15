@@ -146,7 +146,7 @@ def testRematches():
     reportMatch(id2, id4)
     pairings = swissPairings()
     print pairings
-    print "9. Working on test for preventing rematches"
+    if 
 
 
 if __name__ == '__main__':
