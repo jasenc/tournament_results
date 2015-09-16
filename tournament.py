@@ -140,6 +140,24 @@ def reportMatch(winner, loser):
 
 
 def preventRematches(player_matches, previous_matches):
+    """ This function is utilized by the following swissPairings().
+
+    It is called by swissPairings() and is provided with the proposed
+    player_matches as well as the previous_matches that have taken place
+    during the tournamnet. With this information, preventRematches()
+    recursively verifies there are no remaining rematches throughout the
+    proposed matches.
+
+    Args:
+        player_matches: proposed matches from database, obtained in
+                        swissPairings().
+        previous_matches: previous matches from the duration of the tournament,
+                          obtained in swissPairings().
+
+    Returns:
+        player_matches: the same tuple that is provided is then returned after
+                        it is insured there are no rematches.
+    """
     # Check to prevent rematches.
     # For every match returned from the database,
     for i in range(len(player_matches)):
@@ -159,7 +177,6 @@ def preventRematches(player_matches, previous_matches):
                 # Try swapping them with the first player from the next match.
                 try:
                     other_player = player_matches[i+1][0]
-                    print type(player_matches)
                     player_matches[i][0] = other_player
                     # Then we need to convert the following match to a list.
                     player_matches[i+1] = list(player_matches[i+1])
@@ -197,16 +214,18 @@ def swissPairings():
         name2: the second player's name
     """
 
-    # SQL method of sorting swissPairings
+    # Use the database to generate a tuple of proposed matches.
     db, c = connect()
     query = "SELECT * FROM player_matches;"
     c.execute(query)
     player_matches = c.fetchall()
+    # Then use the database to generate a tuple of previous matches.
     query = "SELECT * FROM previous_matches;"
     c.execute(query)
     previous_matches = c.fetchall()
     db.close()
-
+    # Provide these tuples to the previously defined preventRematches, and
+    # assign its results as next_matches to be returned by this function.
     next_matches = preventRematches(player_matches, previous_matches)
 
     return next_matches
