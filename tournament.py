@@ -173,14 +173,11 @@ def preventRematches(player_matches, previous_matches):
                     player_matches[i-1] = list(player_matches[i-1])
                     player_matches[i-1][0] = this_player
                     player_matches[i-1] = tuple(player_matches[i-1])
+                player_matches[i] = tuple(player_matches[i])
                 player_matches = tuple(player_matches)
 
                 return preventRematches(player_matches, previous_matches)
 
-            else:
-                break
-            break
-        break
     return player_matches
 
 
