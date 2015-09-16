@@ -91,14 +91,14 @@ def testReportMatches():
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
     reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    reportMatch(id4, id3)
     standings = playerStandings()
     for (i, n, w, m) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
-        if i in (id1, id3) and w != 1:
+        if i in (id1, id4) and w != 1:
             raise ValueError("Each match winner should have one win recorded.")
-        elif i in (id2, id4) and w != 0:
+        elif i in (id2, id3) and w != 0:
             raise ValueError("Each match loser should have zero wins \
                               recorded.")
     print "7. After a match, players have updated standings."
@@ -128,6 +128,28 @@ def testPairings():
     print "8. After one match, players with one win are paired."
 
 
+def testRematches():
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("Mario Brothers")
+    registerPlayer("Luigi Brothers")
+    registerPlayer("Koopa Troopa")
+    registerPlayer("Princess Peach")
+    standings = playerStandings()
+    [id1, id2, id3, id4] = [row[0] for row in standings]
+    reportMatch(id1, id2)
+    reportMatch(id3, id4)
+    pairings = swissPairings()
+    reportMatch(id1, id3)
+    reportMatch(id2, id4)
+    pairings = swissPairings()
+    if pairings[0][0] == id1 and pairings[0][2] == id2:
+        raise ValueError("There is a rematch between the first two players")
+    elif pairings[1][0] == id3 and pairings[1][2] == id4:
+        raise ValueError("There is a rematch between the last two players")
+    print "9. Rematches successfully prevented."
+
+
 if __name__ == '__main__':
     testDeleteMatches()
     testDelete()
@@ -137,4 +159,5 @@ if __name__ == '__main__':
     testStandingsBeforeMatches()
     testReportMatches()
     testPairings()
+    testRematches()
     print "Success!  All tests pass!"
