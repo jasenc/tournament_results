@@ -139,33 +139,8 @@ def reportMatch(winner, loser):
         db.close()
 
 
-def swissPairings():
-    """Returns a list of pairs of players for the next round of a match.
-
-    Assuming that there are an even number of players registered, each player
-    appears exactly once in the pairings.  Each player is paired with another
-    player with an equal or nearly-equal win record, that is, a player adjacent
-    to him or her in the standings.
-
-    Returns:
-      A list of tuples, each of which contains (id1, name1, id2, name2)
-        id1: the first player's unique id
-        name1: the first player's name
-        id2: the second player's unique id
-        name2: the second player's name
-    """
-
-    # SQL method of sorting swissPairings
-    db, c = connect()
-    query = "SELECT * FROM player_matches;"
-    c.execute(query)
-    player_matches = c.fetchall()
-    query = "SELECT * FROM previous_matches;"
-    c.execute(query)
-    previous_matches = c.fetchall()
-    db.close()
-
-    # Check to prevent rematches
+def preventRematches(player_matches, previous_matches):
+    # Check to prevent rematches.
     # For every match returned from the database,
     for i in range(len(player_matches)):
         # and every match that has already occured,
@@ -199,4 +174,42 @@ def swissPairings():
                     player_matches[i-1][0] = this_player
                     player_matches[i-1] = tuple(player_matches[i-1])
                 player_matches = tuple(player_matches)
+
+                return preventRematches(player_matches, previous_matches)
+
+            else:
+                break
+            break
+        break
     return player_matches
+
+
+def swissPairings():
+    """Returns a list of pairs of players for the next round of a match.
+
+    Assuming that there are an even number of players registered, each player
+    appears exactly once in the pairings.  Each player is paired with another
+    player with an equal or nearly-equal win record, that is, a player adjacent
+    to him or her in the standings.
+
+    Returns:
+      A list of tuples, each of which contains (id1, name1, id2, name2)
+        id1: the first player's unique id
+        name1: the first player's name
+        id2: the second player's unique id
+        name2: the second player's name
+    """
+
+    # SQL method of sorting swissPairings
+    db, c = connect()
+    query = "SELECT * FROM player_matches;"
+    c.execute(query)
+    player_matches = c.fetchall()
+    query = "SELECT * FROM previous_matches;"
+    c.execute(query)
+    previous_matches = c.fetchall()
+    db.close()
+
+    next_matches = preventRematches(player_matches, previous_matches)
+
+    return next_matches
