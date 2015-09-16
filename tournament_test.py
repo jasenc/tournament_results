@@ -137,15 +137,12 @@ def testRematches():
     registerPlayer("Princess Peach")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    print id1, id2, id3, id4
     reportMatch(id1, id2)
     reportMatch(id3, id4)
     pairings = swissPairings()
-    print pairings
     reportMatch(id1, id3)
     reportMatch(id2, id4)
     pairings = swissPairings()
-    print pairings
     if pairings[0][0] == id1 and pairings[0][2] == id2:
         raise ValueError("There is a rematch between the first two players")
     elif pairings[1][0] == id3 and pairings[1][2] == id4:
